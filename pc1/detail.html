@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/element-ui@2.12.0/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="./css/detail.css">
+  <script src="./js/jquery-1.11.3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+  <script src="https://unpkg.com/element-ui@2.12.0/lib/index.js"></script> 
+  <title>煤炭科学技术研究院有限公司</title>
+  <style>
+    .el-tabs__nav-wrap::after{
+      height: 1px;
+    }
+    .el-form-item{
+      margin-bottom: 0;
+    }
+    .el-form-item__label{
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+    }
+    .el-table .cell{
+      font-size: 12px;
+    }
+    .name .el-table .cell.el-tooltip{
+      color: #007AF2;
+    }
+    .el-table th{
+      background: #FBFBFB;
+    }
+    .el-table--enable-row-hover .el-table__body tr:hover>td{
+      background: #D3E9FF;
+    }
+  </style>
+</head>
+<body>
+  <div class="detail" id="detail">
+    <div class="header-list" v-if="isPhone">
+      <div class="list-item" v-for="(item, index) in hearderLits" :key="index">
+        <div v-if="item.title == '主页'" class="header-one" @click="goIndex">{{item.title}}</div>
+        <div v-else class="header-one" @click="item.show = !item.show" :class="item.show?'header-active':''">{{item.title}}</div>
+        <div class="item-bottom" v-for="(temp, index1) in item.child" v-show="item.show">
+          <div class='header-three' @click.stop="temp.show = !temp.show">
+            <span :class="temp.show?'header-active1':''">{{temp.title}}</span>
+            <img v-if="!temp.show" src="./assets/组 54 拷贝@2x.png" alt="">
+            <img v-else src="./assets/组 54@2x.png" alt="">
+          </div>
+          <div v-show="temp.show">
+            <div class="header-four" v-for="(item2, index) in temp.children" @click.stop="isPhone = false">{{item2.title}} </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 头部信息 -->
+    <div class="header-top">
+      <div class="header-left">
+        <img class="header-img" src="./assets/形状 1@2x.png" alt="">
+        <div class="tab">
+          <div @click="goIndex" >主页</div>
+          <div class="safe-label" @click="matterShow=!matterShow">
+            <span>代办事宜</span>
+            <div v-show="matterShow" class="down-list">
+              <div class="down-item" v-for="(item, index) in list" :key="index">
+                <div :class="item.show ? 'down-active down-top' : 'down-top'" @click.stop="item.show = !item.show">
+                  <span>{{item.name}}</span>
+                  <img v-if="!item.show"  src="./assets/组 54 拷贝@2x.png" alt="">
+                  <img v-else src="./assets/组 54@2x.png" alt="">
+                </div>
+                <div class='down-bottom' v-if="item.show">
+                  <div v-for="(temp, index1) in item.children" :key="index1">{{temp.label}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="active safe-label" @click="safeShow=!safeShow">
+            <span>安全监控填报</span>
+            <div v-show="safeShow" class="down-list">
+              <div class="down-item" v-for="(item, index) in list" :key="index">
+                <div :class="item.show ? 'down-active down-top' : 'down-top'" @click.stop="item.show = !item.show">
+                  <span>{{item.name}}</span>
+                  <img v-if="!item.show"  src="./assets/组 54 拷贝@2x.png" alt="">
+                  <img v-else src="./assets/组 54@2x.png" alt="">
+                </div>
+                <div class='down-bottom' v-if="item.show">
+                  <div v-for="(temp, index1) in item.children" :key="index1">{{temp.label}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="safe-label" @click="isShow=!isShow">
+            <span>安全自控填报</span>
+            <div v-show="isShow" class="down-list">
+              <div class="down-item" v-for="(item, index) in list" :key="index">
+                <div :class="item.show ? 'down-active down-top' : 'down-top'" @click.stop="item.show = !item.show">
+                  <span>{{item.name}}</span>
+                  <img v-if="!item.show"  src="./assets/组 54 拷贝@2x.png" alt="">
+                  <img v-else src="./assets/组 54@2x.png" alt="">
+                </div>
+                <div class='down-bottom' v-if="item.show">
+                  <div v-for="(temp, index1) in item.children" :key="index1">{{temp.label}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="safe-label" @click="planShow=!planShow">
+            <span>同步计划</span>
+            <div v-show="planShow" class="down-list">
+              <div class="down-item" v-for="(item, index) in list" :key="index">
+                <div :class="item.show ? 'down-active down-top' : 'down-top'" @click.stop="item.show = !item.show">
+                  <span>{{item.name}}</span>
+                  <img v-if="!item.show"  src="./assets/组 54 拷贝@2x.png" alt="">
+                  <img v-else src="./assets/组 54@2x.png" alt="">
+                </div>
+                <div class='down-bottom' v-if="item.show">
+                  <div v-for="(temp, index1) in item.children" :key="index1">{{temp.label}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="safe-label" @click="seetingShow=!seetingShow">
+            <span>系统设置</span>
+            <div v-show="seetingShow" class="down-list">
+              <div class="down-item" v-for="(item, index) in list" :key="index">
+                <div :class="item.show ? 'down-active down-top' : 'down-top'" @click.stop="item.show = !item.show">
+                  <span>{{item.name}}</span>
+                  <img v-if="!item.show"  src="./assets/组 54 拷贝@2x.png" alt="">
+                  <img v-else src="./assets/组 54@2x.png" alt="">
+                </div>
+                <div class='down-bottom' v-if="item.show">
+                  <div v-for="(temp, index1) in item.children" :key="index1">{{temp.label}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="header-right">
+        <img class="avart" src="./assets/男头像@2x.png" alt="">
+        <div class="userName">000001</div>
+        <img class="down" src="./assets/下拉@2x.png" alt="">
+      </div>
+      <div class='header-right1'>
+        <img src="./assets/三横@2x.png" @click="isPhone = true" v-if="!isPhone" alt="">
+        <img src="./assets/关闭@2x.png" style="width: 15px;height: 15px;" @click="isPhone = false" v-else alt="">
+      </div>
+    </div>
+    <div class="detail-content">
+      <div class="detail-title">查询筛序</div>
+      <div class="detail-search">
+        <div class="search-top">
+          <el-input placeholder="请输入内容" v-model="input3" class="input-with-select search-input">
+            <el-button slot="append" style="background: #007AF2; color: #fff;border-radius: 0;height: 41px;" type="primary">搜索</el-button>
+          </el-input>
+          <span class="item">企业名称</span>
+          <span class="item">企业简称</span>
+          <span class="item">法人代表</span>
+        </div>
+        <div class="tabs">
+          <el-tabs style="margin-top: 10px" v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane label="全部" name="first"></el-tab-pane>
+            <el-tab-pane label="待审核" name="second"></el-tab-pane>
+            <el-tab-pane label="审核通过" name="third"></el-tab-pane>
+            <el-tab-pane label="审核驳回" name="four"></el-tab-pane>
+          </el-tabs>
+          <div class="search-button"><el-button>重置</el-button><el-button type="primary">查询</el-button></div>
+        </div>
+        <el-form :inline="true"  label-width="135px">
+          <el-form-item label="主营业务涉及行业：">
+            <el-select v-model="type"placeholder="请选择">
+              <el-option
+                placeholder="请选择企业类型"
+                v-for="item in options1"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="企业类型：">
+            <el-select v-model="type"placeholder="请选择">
+              <el-option
+                placeholder="请选择企业类型"
+                v-for="item in options1"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="企业地址：">
+            <el-cascader
+              v-model="city"
+              :options="options"
+              placeholder="请选择省市区"
+              @change="handleChange"></el-cascader>
+          </el-form-item>
+        </el-form>
+        <div class="search-button1"><el-button>重置</el-button><el-button type="primary">查询</el-button></div>
+      </div>
+      <div class='detail-table'>
+        <div class="title1">
+          <div class="title-left"><span class="border"></span><span>重要文件</span></div>
+          <div>
+            <el-button size="mini" icon="el-icon-plus" type="primary" @click="goForm">填报</el-button>
+            <el-button plain size="mini" type="danger" icon="el-icon-delete">删除</el-button>
+          </div>
+        </div>
+        <el-table
+          ref="multipleTable"
+          :data="tableData"
+          tooltip-effect="dark"
+          style="width: 100%"
+          @selection-change="handleSelectionChange">
+          <el-table-column
+            type="selection"
+            width="50">
+          </el-table-column>
+          <el-table-column
+            label="序号"
+            width="50"
+            type="index"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="code"
+            width="70"
+            label="企业编号">
+          </el-table-column>
+          <el-table-column
+            show-overflow-tooltip
+            label="企业名称">
+            <template scope="scope">
+              <span style="color: #007AF2">{{scope.row.compary}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="realName"
+            label="企业简称">
+          </el-table-column>
+          <el-table-column
+            prop="address"
+            label="企业地址"
+            show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column
+            prop="code1"
+            label="统一社会信用代码"
+            show-overflow-tooltip
+            >
+          </el-table-column>
+          <el-table-column
+            prop="type"
+            show-overflow-tooltip
+            label="主营业务涉及行业 ">
+          </el-table-column>
+          <el-table-column
+            prop="fund"
+            width="120"
+            label="注册资本(万元) ">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            width="85"
+            label="法人代表">
+          </el-table-column>
+          <el-table-column
+            prop="type1"
+            width="95"
+            label="企业类型">
+          </el-table-column>
+          <el-table-column
+            prop="date1"
+            width="95"
+            label="成立日期"
+            show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column
+            prop="date"
+            width="95"
+            label="核准日期"
+            >
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="操作"
+            width="130"
+            >
+            <template>
+              <el-button style="color:#007AF2;font-size: 12px;" @click="goForm" type="text">编辑</el-button>
+              <el-button style="color:#007AF2;font-size: 12px;" @click="goForm" type="text">查看</el-button>
+              <el-button style="color:#FF0000;font-size: 12px;" type="text">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="detail-table1">
+        <div class="title"><div class="title-left"><span class="border"></span><span>企业基本信息列表</span></div></div>
+        <div class="table-list">
+          <div class="list-top"><span>山东杰安建筑工程有限公司</span><el-checkbox v-model="checked"></el-checkbox></div>
+          <div class="list-center">
+            <div class="center1"><span>注册资本(万元) ：1000</span><span>法人代表：张洪忠</span></div>
+            <div class="center1"><span>企业编码：666666</span><span>企业简称：山东杰安建筑工程</span></div>
+            <div class="center2">统一社会信用代码 ：91370104MA3N1HWC7M</div>
+            <div class="center2">主营业务涉及行业  ：建筑工程施工总承包、地基基础工程专业承...</div>
+            <div class="center2">企业地址：山东省济南市槐荫区西城西进时代中心B座1006室</div>
+          </div>
+          <div class="list-bottom">
+            <div class="bottom-item" @click="goForm"><img src="./assets/编 辑@2x.png" alt=""><span>编辑</span></div>
+            <div class="bottom-item" @click="goForm"><img style="width: 15px;height: 15px;" src="./assets/查看@2x.png" alt=""><span>查看</span></div>
+            <div class="bottom-item"><img src="./assets/删除 拷贝@2x.png" alt=""><span style="color: #FF0000">删除</span></div>
+          </div>
+        </div>
+        <div class="table-list">
+          <div class="list-top"><span>山东杰安建筑工程有限公司</span><el-checkbox v-model="checked"></el-checkbox></div>
+          <div class="list-center">
+            <div class="center1"><span>注册资本(万元) ：1000</span><span>法人代表：张洪忠</span></div>
+            <div class="center1"><span>企业编码：666666</span><span>企业简称：山东杰安建筑工程</span></div>
+            <div class="center2">统一社会信用代码 ：91370104MA3N1HWC7M</div>
+            <div class="center2">主营业务涉及行业  ：建筑工程施工总承包、地基基础工程专业承...</div>
+            <div class="center2">企业地址：山东省济南市槐荫区西城西进时代中心B座1006室</div>
+          </div>
+          <div class="list-bottom">
+            <div class="bottom-item" @click="goForm"><img src="./assets/编 辑@2x.png" alt=""><span>编辑</span></div>
+            <div class="bottom-item" @click="goForm"><img style="width: 15px;height: 15px;" src="./assets/查看@2x.png" alt=""><span>查看</span></div>
+            <div class="bottom-item"><img src="./assets/删除 拷贝@2x.png" alt=""><span style="color: #FF0000">删除</span></div>
+          </div>
+        </div>
+        <div class="table-num">
+          <div class="num-top">
+              <span>共30条</span>
+              <el-pagination
+              background
+              layout="prev, pager, next"
+              :total="30">
+            </el-pagination>
+          </div>
+          <div class="num-bottom">
+            <el-checkbox style="margin-top: 7px;" v-model="checked">全选</el-checkbox>
+            <div>
+              <el-button size="small" icon="el-icon-plus" type="primary" @click="goForm">填报</el-button>
+              <el-button plain size="small" type="danger" icon="el-icon-delete">删除</el-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">Copyright © 2022煤炭科学技术研究院 沪ICP备10011451号-6</div>
+  </div>
+  
+  <script type="text/javascript">
+    new Vue({
+      el: '#detail',
+      data: function() {
+        return{
+          isPhone: '',
+          input3: '',
+          activeName: 'first',
+          safeShow: false,
+          isShow: false,
+          planShow: false,
+          seetingShow: false,
+          matterShow: false,
+          checked: false,
+          type: '',
+          city: [],
+          list: [
+            {
+              name: '企业基本信息',
+              show: false,
+              children: [
+                {
+                  label: '企业基本信息维护'
+                },
+                {
+                  label: '企业基本信息查询'
+                }
+              ]
+            },
+            {
+              name: '安全风险业务',
+              show: false,
+              children: [
+                {
+                  label: '企业基本信息维护'
+                },
+                {
+                  label: '企业基本信息查询'
+                }
+              ]
+            },
+            {
+              name: '法律法规标准',
+              show: false,
+              children: [
+                {
+                  label: '企业基本信息维护'
+                },
+                {
+                  label: '企业基本信息查询'
+                }
+              ]
+            },
+            {
+              name: '安全目标',
+              show: false,
+              children: [
+                {
+                  label: '企业基本信息维护'
+                },
+                {
+                  label: '企业基本信息查询'
+                }
+              ]
+            },
+            {
+              name: '机构和80圭',
+              show: false,
+              children: [
+                {
+                  label: '企业基本信息维护'
+                },
+                {
+                  label: '企业基本信息查询'
+                }
+              ]
+            },
+            {
+              name: '制度体系',
+              show: false,
+              children: [
+                {
+                  label: '企业基本信息维护'
+                },
+                {
+                  label: '企业基本信息查询'
+                }
+              ]
+            },
+            {
+              name: '安全生产费用',
+              show: false,
+              children: [
+                {
+                  label: '企业基本信息维护'
+                },
+                {
+                  label: '企业基本信息查询'
+                }
+              ]
+            }
+          ],
+          options1: [{
+            value: '选项1',
+            label: '黄金糕'
+          }, {
+            value: '选项2',
+            label: '双皮奶'
+          }, {
+            value: '选项3',
+            label: '蚵仔煎'
+          }, {
+            value: '选项4',
+            label: '龙须面'
+          }, {
+            value: '选项5',
+            label: '北京烤鸭'
+          }],
+          options: [{
+            value: 'zhinan',
+            label: '指南',
+            children: [{
+              value: 'shejiyuanze',
+              label: '设计原则',
+              children: [{
+                value: 'yizhi',
+                label: '一致'
+              }, {
+                value: 'fankui',
+                label: '反馈'
+              }, {
+                value: 'xiaolv',
+                label: '效率'
+              }, {
+                value: 'kekong',
+                label: '可控'
+              }]
+            }, {
+              value: 'daohang',
+              label: '导航',
+              children: [{
+                value: 'cexiangdaohang',
+                label: '侧向导航'
+              }, {
+                value: 'dingbudaohang',
+                label: '顶部导航'
+              }]
+            }]
+            }, {
+            value: 'zujian',
+            label: '组件',
+              children: [{
+                value: 'basic',
+                label: 'Basic',
+                children: [{
+                  value: 'layout',
+                  label: 'Layout 布局'
+                }, {
+                  value: 'color',
+                  label: 'Color 色彩'
+                }, {
+                  value: 'typography',
+                  label: 'Typography 字体'
+                }, {
+                  value: 'icon',
+                  label: 'Icon 图标'
+                }, {
+                  value: 'button',
+                  label: 'Button 按钮'
+                }]
+              }, {
+                value: 'form',
+                label: 'Form',
+                children: [{
+                  value: 'radio',
+                  label: 'Radio 单选框'
+                }, {
+                  value: 'checkbox',
+                  label: 'Checkbox 多选框'
+                }, {
+                  value: 'input',
+                  label: 'Input 输入框'
+                }, {
+                  value: 'input-number',
+                  label: 'InputNumber 计数器'
+                }, {
+                  value: 'select',
+                  label: 'Select 选择器'
+                }, {
+                  value: 'cascader',
+                  label: 'Cascader 级联选择器'
+                }, {
+                  value: 'switch',
+                  label: 'Switch 开关'
+                }, {
+                  value: 'slider',
+                  label: 'Slider 滑块'
+                }, {
+                  value: 'time-picker',
+                  label: 'TimePicker 时间选择器'
+                }, {
+                  value: 'date-picker',
+                  label: 'DatePicker 日期选择器'
+                }, {
+                  value: 'datetime-picker',
+                  label: 'DateTimePicker 日期时间选择器'
+                }, {
+                  value: 'upload',
+                  label: 'Upload 上传'
+                }, {
+                  value: 'rate',
+                  label: 'Rate 评分'
+                }, {
+                  value: 'form',
+                  label: 'Form 表单'
+                }]
+              }, {
+                value: 'data',
+                label: 'Data',
+                children: [{
+                  value: 'table',
+                  label: 'Table 表格'
+                }, {
+                  value: 'tag',
+                  label: 'Tag 标签'
+                }, {
+                  value: 'progress',
+                  label: 'Progress 进度条'
+                }, {
+                  value: 'tree',
+                  label: 'Tree 树形控件'
+                }, {
+                  value: 'pagination',
+                  label: 'Pagination 分页'
+                }, {
+                  value: 'badge',
+                  label: 'Badge 标记'
+                }]
+              }, {
+                value: 'notice',
+                label: 'Notice',
+                children: [{
+                  value: 'alert',
+                  label: 'Alert 警告'
+                }, {
+                  value: 'loading',
+                  label: 'Loading 加载'
+                }, {
+                  value: 'message',
+                  label: 'Message 消息提示'
+                }, {
+                  value: 'message-box',
+                  label: 'MessageBox 弹框'
+                }, {
+                  value: 'notification',
+                  label: 'Notification 通知'
+                }]
+              }, {
+                value: 'navigation',
+                label: 'Navigation',
+                children: [{
+                  value: 'menu',
+                  label: 'NavMenu 导航菜单'
+                }, {
+                  value: 'tabs',
+                  label: 'Tabs 标签页'
+                }, {
+                  value: 'breadcrumb',
+                  label: 'Breadcrumb 面包屑'
+                }, {
+                  value: 'dropdown',
+                  label: 'Dropdown 下拉菜单'
+                }, {
+                  value: 'steps',
+                  label: 'Steps 步骤条'
+                }]
+              }, {
+                value: 'others',
+                label: 'Others',
+                children: [{
+                  value: 'dialog',
+                  label: 'Dialog 对话框'
+                }, {
+                  value: 'tooltip',
+                  label: 'Tooltip 文字提示'
+                }, {
+                  value: 'popover',
+                  label: 'Popover 弹出框'
+                }, {
+                  value: 'card',
+                  label: 'Card 卡片'
+                }, {
+                  value: 'carousel',
+                  label: 'Carousel 走马灯'
+                }, {
+                  value: 'collapse',
+                  label: 'Collapse 折叠面板'
+                }]
+              }]
+            }, {
+            value: 'ziyuan',
+            label: '资源',
+            children: [{
+              value: 'axure',
+              label: 'Axure Components'
+            }, {
+              value: 'sketch',
+              label: 'Sketch Templates'
+            }, {
+              value: 'jiaohu',
+              label: '组件交互文档'
+            }]
+          }],
+          tableData: [{
+            date: '2016-05-03',
+            date1: '2016-05-03',
+            name: '王小虎',
+            code: '666666',
+            code1: '91370104MA3N1HWC7M',
+            realName: '山东杰安建筑工程',
+            type: '建筑工程施工总承包、地基基础工程专业承包、市政公',
+            fund: '200',
+            type1: '有限责任公司',
+            compary: '山东杰安建筑工程有限公司',
+            address: '山东省济南市槐萌区西域西城西进时代中心B座1006室',
+          },{
+            date: '2016-05-03',
+            date1: '2016-05-03',
+            name: '王小虎',
+            code: '666666',
+            code1: '91370104MA3N1HWC7M',
+            realName: '山东杰安建筑工程',
+            type: '建筑工程施工总承包、地基基础工程专业承包、市政公',
+            fund: '200',
+            type1: '有限责任公司',
+            compary: '山东杰安建筑工程有限公司',
+            address: '山东省济南市槐萌区西域西城西进时代中心B座1006室',
+          },
+          {
+            date: '2016-05-03',
+            date1: '2016-05-03',
+            name: '王小虎',
+            code: '666666',
+            code1: '91370104MA3N1HWC7M',
+            realName: '山东杰安建筑工程',
+            type: '建筑工程施工总承包、地基基础工程专业承包、市政公',
+            fund: '200',
+            type1: '有限责任公司',
+            compary: '山东杰安建筑工程有限公司',
+            address: '山东省济南市槐萌区西域西城西进时代中心B座1006室',
+          }],
+          hearderLits: [
+            {
+              title: '主页',
+              show: false,
+              child:[
+                {
+                  title: '企业基本信息',
+                  show: false,
+                  children: [
+                    {
+                      title: '企业基本信息维护'
+                    },
+                    {
+                      title: '企业基本信息查询'
+                    }
+                  ]
+                },
+                {
+                  title: '法律法规标准',
+                  show: false,
+                },
+                {
+                  title: '安全目标',
+                  show: false,
+                },
+                {
+                  title: '机构和80圭',
+                  show: false,
+                },
+                {
+                  title: '制度体系',
+                  show: false,
+                }
+              ]
+            },
+            {
+              title: '代办事宜',
+              show: false,
+              child:[
+                {
+                  title: '企业基本信息',
+                  show: false,
+                  children: [
+                    {
+                      title: '企业基本信息维护'
+                    },
+                    {
+                      title: '企业基本信息查询'
+                    }
+                  ]
+                },
+                {
+                  title: '法律法规标准',
+                  show: false,
+                },
+                {
+                  title: '安全目标',
+                  show: false,
+                },
+                {
+                  title: '机构和80圭',
+                  show: false,
+                },
+                {
+                  title: '制度体系',
+                  show: false,
+                }
+              ]
+            },
+            {
+              title: '安全自控填报',
+              show: false,
+              child:[
+                {
+                  title: '企业基本信息',
+                  show: false,
+                  children: [
+                    {
+                      title: '企业基本信息维护'
+                    },
+                    {
+                      title: '企业基本信息查询'
+                    }
+                  ]
+                },
+                {
+                  title: '法律法规标准',
+                  show: false,
+                },
+                {
+                  title: '安全目标',
+                  show: false,
+                },
+                {
+                  title: '机构和80圭',
+                  show: false,
+                },
+                {
+                  title: '制度体系',
+                  show: false,
+                }
+              ]
+            },
+            {
+              title: '同步计划',
+              show: false,
+              child:[
+                {
+                  title: '企业基本信息',
+                  show: false,
+                  children: [
+                    {
+                      title: '企业基本信息维护'
+                    },
+                    {
+                      title: '企业基本信息查询'
+                    }
+                  ]
+                },
+                {
+                  title: '法律法规标准',
+                  show: false,
+                },
+                {
+                  title: '安全目标',
+                  show: false,
+                },
+                {
+                  title: '机构和80圭',
+                  show: false,
+                },
+                {
+                  title: '制度体系',
+                  show: false,
+                }
+              ]
+            },
+            {
+              title: '系统设置',
+              show: false,
+              child:[
+                {
+                  title: '企业基本信息',
+                  show: false,
+                  children: [
+                    {
+                      title: '企业基本信息维护'
+                    },
+                    {
+                      title: '企业基本信息查询'
+                    }
+                  ]
+                },
+                {
+                  title: '法律法规标准',
+                  show: false,
+                },
+                {
+                  title: '安全目标',
+                  show: false,
+                },
+                {
+                  title: '机构和80圭',
+                  show: false,
+                },
+                {
+                  title: '制度体系',
+                  show: false,
+                }
+              ]
+            }
+          ],
+        }
+      },
+      methods: {
+        goIndex: function() {
+          window.location.href="./index.html"
+        },
+        goForm: function() {
+          window.location.href="./form.html"
+        },
+        handleClick: function(val){
+
+        },
+        handleChange: function(val) {},
+        handleSelectionChange: function(val) {
+
+        },
+      }
+    })
+  </script>
+</body>
+</html>
